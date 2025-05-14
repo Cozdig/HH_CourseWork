@@ -19,18 +19,20 @@ class HH(Parser):
     Класс Parser является родительским классом, который вам необходимо реализовать
     """
 
-    def __init__(self, file_worker):
+    def __init__(self):
         self.__url = 'https://api.hh.ru/vacancies'
         self.__headers = {'User-Agent': 'HH-User-Agent'}
-        self.__params = {'text': '', 'page': 0, 'per_page': 100}
+        self.__params = {'text': '', 'page': 0, 'per_page': 20}
         self.__vacancies = []
-        self.__file_worker = file_worker
         super().__init__()
 
     def load_vacancies(self, keyword):
         self.__params['text'] = keyword
-        while self.__params.get('page') != 20:
-            response = requests.get(self.__url, headers=self.__headers, params=self.__params)
-            vacancies = response.json()['items']
-            self.__vacancies.extend(vacancies)
-            self.__params['page'] += 1
+        response = requests.get(self.__url, headers=self.__headers, params=self.__params)
+        vacancies = response.json()['items']
+        for vac in vacancies:
+            self.__vacancies.append(vac)
+
+    @property
+    def vacancies(self):
+        return self.__vacancies
