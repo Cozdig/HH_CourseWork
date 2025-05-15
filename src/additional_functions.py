@@ -1,35 +1,41 @@
 import re
-from src.vacancy_options import Vacancy_options
 
-class Main_funcs:
-
-    @staticmethod
-    def just_search(ob):
+class UserInputHandler:
+    """Класс для взаимодействия с пользователем."""
+    def ask_for_conf_name(self):
         while True:
             tof = input("Хотите ли вы провести поиск вакансий? (да/нет)\n").lower().strip()
             if tof not in ("да", "нет"):
                 print("Нет такого ответа. Введите 'да' или 'нет'.")
                 continue
+            elif tof == "да":
+                return True
+            elif tof == "нет":
+                return False
 
-            if tof == "да":
-                search = input("Введите ваш поисковой запрос: (укажите название работы)\n")
-                pattern = re.compile(search, re.IGNORECASE)
-                vacancies = [vac for vac in ob if
-                             pattern.search(vac.get("name", ""))]
-                if not vacancies:
-                    print("Такая(-ие) вакансия(-ии) не найдена(-ы).")
-                    continue
-                else:
-                    return vacancies
+    def ask_name_word(self):
+        search = input("Введите ваш поисковой запрос: (укажите название работы)\n")
+        return search
+
+
+    def ask_for_conf_desc(self):
+        while True:
+            answer = input("Хотите ли вы искать вакансии по описанию? (да/нет)\n").strip().lower()
+            if answer == "да":
+                return True
+            elif answer == "нет":
+                return False
             else:
-                return ob
-    @staticmethod
-    def search_description():
-        key_word = input("Введите ключевое слово в описании:\n")
+                print("Нет такого ответа. Введите 'да' или 'нет'.")
 
-
-class UserInputHandler:
-    """Класс для взаимодействия с пользователем."""
+    def ask_key_word(self):
+        while True:
+            key_word = str(input("Введите ключевое слово в описании:\n"))
+            if not key_word:
+                print("Вы не ввели слово")
+                continue
+            else:
+                return key_word
 
     def ask_for_confirmation(self):
         """Запрашивает подтверждение на формирование топа вакансий."""
@@ -54,6 +60,15 @@ class UserInputHandler:
             except ValueError:
                 print("Некорректный ввод. Введите целое число.")
 
+class SearchDescription:
+    def __init__(self, ob):
+        self.__vacancies = ob
+
+    def search_desc(self, key_word):
+        pattern = re.compile(key_word, re.IGNORECASE)
+        vacancies = [vac for vac in self.__vacancies if pattern.search(vac.get("snippet", {}).get("responsibility") or "нет")]
+        return vacancies
+
 
 class TopVacanciesCalculator:
     """Класс для расчёта и формирования топа вакансий."""
@@ -72,6 +87,19 @@ class TopVacanciesCalculator:
         top_vacancies = sorted_vacancies[:top_size]
         return [vacancy for _, vacancy in top_vacancies]
 
+class SearchName:
+    def __init__(self, ob):
+        self.__vacancies = ob
+
+    def search_name(self, search):
+        pattern = re.compile(search, re.IGNORECASE)
+        vacancies = [vac for vac in self.__vacancies if pattern.search(vac.get("name", ""))]
+        if not vacancies:
+            print("Такая(-ие) вакансия(-ии) не найдена(-ы).")
+            return []
+        else:
+            return vacancies
+
 def main_top(ob):
     user_input_handler = UserInputHandler()
     if user_input_handler.ask_for_confirmation():
@@ -79,3 +107,21 @@ def main_top(ob):
         calculator = TopVacanciesCalculator(ob)
         result = calculator.calculate_top(top_size)
         return result
+
+def main_search_desc(ob):
+    user_input_handler = UserInputHandler()
+    if user_input_handler.ask_for_conf_desc():
+        key_word = user_input_handler.ask_key_word()
+        search = SearchDescription(ob)
+        result = search.search_desc(key_word)
+        return result
+
+def main_search_name(ob):
+    user_input_handler = UserInputHandler()
+    if user_input_handler.ask_for_conf_name():
+        name_word = user_input_handler.ask_name_word()
+        search = SearchName(ob)
+        result = search.search_name(name_word)
+        return result
+
+

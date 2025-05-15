@@ -1,12 +1,41 @@
-from src.additional_functions import Main_funcs, main_top
+from src.additional_functions import main_top, main_search_desc, main_search_name
+from src.create_user_vacancy import add_vacancy, show_vacancy, del_vacancy
 from src.utils import Utils
-from src.vacancy_options import Vacancy_options
 from src.class_api import HH
 
-api = HH()
-api.load_vacancies('Россия')
-api_json = api.vacancies
-Utils.print_vacancy(api_json)
-Utils.print_vacancy(Main_funcs.just_search(api_json))
-Utils.print_vacancy(main_top(api_json))
 
+
+def main():
+    api = HH()
+    api.load_vacancies('Россия')
+    answer = {
+        1: lambda: Utils.print_vacancy(main_search_name(api.vacancies)),
+        2: lambda: Utils.print_vacancy(main_search_desc(api.vacancies)),
+        3: lambda: Utils.print_vacancy(main_top(api.vacancies)),
+        4: lambda: add_vacancy(),
+        5: lambda: Utils.print_vacancy(show_vacancy()),
+        6: lambda: del_vacancy(),
+        7: exit
+    }
+    while True:
+        try:
+            user_input = int(input("""Выберите действие:
+1. Поиск вакансий по названию работы.
+2. Поиск вакансий по описанию.
+3. Составить топ вакансий по зарплате.
+4. Добавить вакансию.
+5. Посмотреть свои вакансии.
+6. Удалить свою вакансию.
+7. Выйти из программы
+Ваш выбор: """))
+            if user_input in answer:
+                answer[user_input]()
+            else:
+                print("Некорректный ввод. Пожалуйста, выберите число от 1 до 7")
+
+        except ValueError:
+            print("Пожалуйста, введите число от 1 до 7")
+        except Exception as e:
+            print(f"Произошла ошибка: {e}")
+
+main()
