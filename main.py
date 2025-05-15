@@ -1,13 +1,12 @@
-from src.additional_functions import main_top, main_search_desc, main_search_name
-from src.create_user_vacancy import add_vacancy, show_vacancy, del_vacancy
-from src.utils import Utils
+from src.additional_functions import main_search_desc, main_search_name, main_top
 from src.class_api import HH
-
+from src.create_user_vacancy import add_vacancy, del_vacancy, show_vacancy
+from src.utils import Utils
 
 
 def main():
     api = HH()
-    api.load_vacancies('Россия')
+    api.load_vacancies("Россия")
     answer = {
         1: lambda: Utils.print_vacancy(main_search_name(api.vacancies)),
         2: lambda: Utils.print_vacancy(main_search_desc(api.vacancies)),
@@ -15,11 +14,13 @@ def main():
         4: lambda: add_vacancy(),
         5: lambda: Utils.print_vacancy(show_vacancy()),
         6: lambda: del_vacancy(),
-        7: exit
+        7: exit,
     }
     while True:
         try:
-            user_input = int(input("""Выберите действие:
+            user_input = int(
+                input(
+                    """Выберите действие:
 1. Поиск вакансий по названию работы.
 2. Поиск вакансий по описанию.
 3. Составить топ вакансий по зарплате.
@@ -27,7 +28,9 @@ def main():
 5. Посмотреть свои вакансии.
 6. Удалить свою вакансию.
 7. Выйти из программы
-Ваш выбор: """))
+Ваш выбор: """
+                )
+            )
             if user_input in answer:
                 answer[user_input]()
             else:
@@ -38,4 +41,6 @@ def main():
         except Exception as e:
             print(f"Произошла ошибка: {e}")
 
-main()
+
+if __name__ == "__main__":
+    main()

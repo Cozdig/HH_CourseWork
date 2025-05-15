@@ -5,6 +5,7 @@ from src.vacancy_options import Vacancy_options
 
 class UserInputHandlerVacancy:
     """Класс для взаимодействия с пользователем."""
+
     def ask_for_show(self):
         while True:
             tof = input("Хотите ли вы посмотреть свои вакансии? (да/нет)\n").lower().strip()
@@ -46,7 +47,7 @@ class UserInputHandlerVacancy:
 
         currency = input("Введите валюту зарплаты:\n")
         res = input("Введите описание работы:\n")
-        return name,place,from_sal,to_sal,currency,res
+        return name, place, from_sal, to_sal, currency, res
 
     def ask_for_del(self):
         while True:
@@ -79,13 +80,15 @@ class UserVacancy:
         self.__to_sal = to_sal
         self.__currency = currency
         self.__res = res
+
     def to_dict(self):
         return {
-            'name': self.__name,
-            'area': {'name': self.__place},
-            'salary': {'from': self.__from_sal, 'to': self.__to_sal, 'currency': self.__currency},
-            'snippet': {'responsibility': self.__res}
+            "name": self.__name,
+            "area": {"name": self.__place},
+            "salary": {"from": self.__from_sal, "to": self.__to_sal, "currency": self.__currency},
+            "snippet": {"responsibility": self.__res},
         }
+
 
 def create_vacancy():
     user_input = UserInputHandlerVacancy()
@@ -94,14 +97,15 @@ def create_vacancy():
         name, place, from_sal, to_sal, currency, description = words
         create = UserVacancy(name, place, from_sal, to_sal, currency, description)
         new_vac = Vacancies(
-            name=create.to_dict()['name'],
-            name_place=create.to_dict()['area']['name'],
-            salary_from=create.to_dict()['salary']['from'],
-            salary_to=create.to_dict()['salary']['to'],
-            currency=create.to_dict()['salary']['currency'],
-            description=create.to_dict()['snippet']['responsibility']
+            name=create.to_dict()["name"],
+            name_place=create.to_dict()["area"]["name"],
+            salary_from=create.to_dict()["salary"]["from"],
+            salary_to=create.to_dict()["salary"]["to"],
+            currency=create.to_dict()["salary"]["currency"],
+            description=create.to_dict()["snippet"]["responsibility"],
         )
         return new_vac
+
 
 def show_vacancy():
     user_input = UserInputHandlerVacancy()
@@ -109,12 +113,14 @@ def show_vacancy():
         vac = Vacancy_options()
         return vac.get_vacancies()
 
+
 def del_vacancy():
     user_input = UserInputHandlerVacancy()
     if user_input.ask_for_del():
         id_ = user_input.ask_for_correct_id()
         vac = Vacancy_options()
         vac.del_vacancy(id_)
+
 
 def add_vacancy():
     vac = Vacancy_options()

@@ -1,7 +1,9 @@
 import re
 
+
 class UserInputHandler:
     """Класс для взаимодействия с пользователем."""
+
     def ask_for_conf_name(self):
         while True:
             tof = input("Хотите ли вы провести поиск вакансий? (да/нет)\n").lower().strip()
@@ -16,7 +18,6 @@ class UserInputHandler:
     def ask_name_word(self):
         search = input("Введите ваш поисковой запрос: (укажите название работы)\n")
         return search
-
 
     def ask_for_conf_desc(self):
         while True:
@@ -60,13 +61,16 @@ class UserInputHandler:
             except ValueError:
                 print("Некорректный ввод. Введите целое число.")
 
+
 class SearchDescription:
     def __init__(self, ob):
         self.__vacancies = ob
 
     def search_desc(self, key_word):
         pattern = re.compile(key_word, re.IGNORECASE)
-        vacancies = [vac for vac in self.__vacancies if pattern.search(vac.get("snippet", {}).get("responsibility") or "нет")]
+        vacancies = [
+            vac for vac in self.__vacancies if pattern.search(vac.get("snippet", {}).get("responsibility") or "нет")
+        ]
         return vacancies
 
 
@@ -87,6 +91,7 @@ class TopVacanciesCalculator:
         top_vacancies = sorted_vacancies[:top_size]
         return [vacancy for _, vacancy in top_vacancies]
 
+
 class SearchName:
     def __init__(self, ob):
         self.__vacancies = ob
@@ -100,6 +105,7 @@ class SearchName:
         else:
             return vacancies
 
+
 def main_top(ob):
     user_input_handler = UserInputHandler()
     if user_input_handler.ask_for_confirmation():
@@ -107,6 +113,7 @@ def main_top(ob):
         calculator = TopVacanciesCalculator(ob)
         result = calculator.calculate_top(top_size)
         return result
+
 
 def main_search_desc(ob):
     user_input_handler = UserInputHandler()
@@ -116,6 +123,7 @@ def main_search_desc(ob):
         result = search.search_desc(key_word)
         return result
 
+
 def main_search_name(ob):
     user_input_handler = UserInputHandler()
     if user_input_handler.ask_for_conf_name():
@@ -123,5 +131,3 @@ def main_search_name(ob):
         search = SearchName(ob)
         result = search.search_name(name_word)
         return result
-
-

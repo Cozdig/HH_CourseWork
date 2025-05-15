@@ -1,4 +1,3 @@
-import json
 from abc import ABC, abstractmethod
 
 from src.utils import Utils
@@ -33,37 +32,34 @@ class Vacancy_options(JsonAbstract):
             print("Ожидается объект класса Vacancies")
             return None
 
-
         new_vacancy_dict = {
             "name": user_vacancy.name,
             "area": {"name": user_vacancy._name_place},
             "salary": {
                 "from": user_vacancy.salary_from,
                 "to": user_vacancy.salary_to,
-                "currency": user_vacancy.currency
+                "currency": user_vacancy.currency,
             },
-            "snippet": {"responsibility": user_vacancy.description}
+            "snippet": {"responsibility": user_vacancy.description},
         }
 
         for existing_vacancy in self._data:
-            if (existing_vacancy["name"] == new_vacancy_dict["name"] and
-                    existing_vacancy["area"]["name"] == new_vacancy_dict["area"]["name"] and
-                    existing_vacancy.get("salary", {}).get("from") == new_vacancy_dict["salary"]["from"] and
-                    existing_vacancy.get("salary", {}).get("to") == new_vacancy_dict["salary"]["to"] and
-                    existing_vacancy.get("salary", {}).get("currency") == new_vacancy_dict["salary"]["currency"] and
-                    existing_vacancy.get("snippet", {}).get("responsibility") == new_vacancy_dict["snippet"][
-                        "responsibility"]):
+            if (
+                existing_vacancy["name"] == new_vacancy_dict["name"]
+                and existing_vacancy["area"]["name"] == new_vacancy_dict["area"]["name"]
+                and existing_vacancy.get("salary", {}).get("from") == new_vacancy_dict["salary"]["from"]
+                and existing_vacancy.get("salary", {}).get("to") == new_vacancy_dict["salary"]["to"]
+                and existing_vacancy.get("salary", {}).get("currency") == new_vacancy_dict["salary"]["currency"]
+                and existing_vacancy.get("snippet", {}).get("responsibility")
+                == new_vacancy_dict["snippet"]["responsibility"]
+            ):
                 print("Такая вакансия уже существует")
                 return None
 
         list_id = [int(i.get("id", "0")) for i in self._data + Vacancies.user_vacancies]
         new_id = str(max(list_id) + 1) if list_id else "1"
 
-        vacancy_dict = {
-            "id": new_id,
-            **new_vacancy_dict
-        }
-
+        vacancy_dict = {"id": new_id, **new_vacancy_dict}
 
         self._data.append(vacancy_dict)
         Vacancies.user_vacancies.append(vacancy_dict)

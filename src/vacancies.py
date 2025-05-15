@@ -2,7 +2,7 @@ class Vacancies:
     user_vacancies = []
     user_vacancies_id = []
 
-    __slots__ = [ "_id", "_name", "_name_place", "_salary_from", "_salary_to", "_currency", "_description"]
+    __slots__ = ["_id", "_name", "_name_place", "_salary_from", "_salary_to", "_currency", "_description"]
 
     def __init__(self, name, name_place, salary_from, salary_to, currency, description):
         self._id = "-1"
@@ -28,6 +28,14 @@ class Vacancies:
     @name.setter
     def name(self, new_name):
         self._name = new_name
+
+    @property
+    def name_place(self):
+        return self._name_place
+
+    @name_place.setter
+    def name_place(self, new_name_place):
+        self._name_place = new_name_place
 
     @property
     def description(self):

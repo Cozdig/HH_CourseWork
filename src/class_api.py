@@ -4,7 +4,6 @@ import requests
 
 
 class Parser(ABC):
-
     @abstractmethod
     def __init__(self):
         pass
@@ -15,11 +14,6 @@ class Parser(ABC):
 
 
 class HH(Parser):
-    """
-    Класс для работы с API HeadHunter
-    Класс Parser является родительским классом, который вам необходимо реализовать
-    """
-
     def __init__(self):
         self.__url = "https://api.hh.ru/vacancies"
         self.__headers = {"User-Agent": "HH-User-Agent"}
@@ -29,11 +23,15 @@ class HH(Parser):
 
     def load_vacancies(self, keyword):
         self.__params["text"] = keyword
-        response = requests.get(self.__url, headers=self.__headers, params=self.__params)
-        vacancies = response.json()["items"]
-        for vac in vacancies:
-            self.__vacancies.append(vac)
+        try:
+            response = requests.get(self.__url, headers=self.__headers, params=self.__params)
+            response.raise_for_status()
+            vacancies = response.json().get("items", [])
+            self.__vacancies.extend(vacancies)
+        except (requests.exceptions.RequestException, ValueError) as e:
+            print(f"Ошибка при загрузке вакансий: {e}")
+            self.__vacancies = []
 
     @property
     def vacancies(self):
-        return self.__vacancies
+        return self.__vacancies.copy()
