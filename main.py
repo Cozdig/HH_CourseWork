@@ -6,7 +6,9 @@ from src.utils import Utils
 
 def main():
     api = HH()
-    api.load_vacancies("Россия")
+    if not api.load_vacancies("Россия"):
+        print("Не удалось загрузить вакансии. Проверьте подключение к интернету.")
+        return
     answer = {
         1: lambda: Utils.print_vacancy(main_search_name(api.vacancies)),
         2: lambda: Utils.print_vacancy(main_search_desc(api.vacancies)),
@@ -16,6 +18,7 @@ def main():
         6: lambda: del_vacancy(),
         7: exit,
     }
+
     while True:
         try:
             user_input = int(
